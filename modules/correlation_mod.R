@@ -91,6 +91,7 @@ cp_server <- function(id, user_data){
                                            n() >= 3 ~ median(value, na.rm = TRUE)),
                          .by = c(Park,
                                  MonitoringLocationName,
+                                 MonitoringLocationName_Long,
                                  CharacteristicName,
                                  end_date,
                                  AxisName,
@@ -109,6 +110,7 @@ cp_server <- function(id, user_data){
         dplyr::select(Park,
                       end_date,
                       MonitoringLocationName,
+                      MonitoringLocationName_Long,
                       PickListName,
                       value,
                       ResultDetectionConditionText) |> 
@@ -136,7 +138,7 @@ cp_server <- function(id, user_data){
       # creating regressions for each option
       df_reg <- reg_df |> 
         # for multiple sites
-        dplyr::group_by(MonitoringLocationName) |> 
+        dplyr::group_by(MonitoringLocationName_Long) |> 
         # removing NA
         dplyr::filter(!is.na(.data[[x]]),
                       !is.na(.data[[y]])) |> 
@@ -155,7 +157,7 @@ cp_server <- function(id, user_data){
       geom_line(data = df_reg, 
                 aes(x = .data[[x]],
                     y = fit,
-                    color = MonitoringLocationName),
+                    color = MonitoringLocationName_Long),
                 inherit.aes = FALSE) #  dont use "global" aes
     })
     
@@ -267,9 +269,9 @@ cp_server <- function(id, user_data){
       ggcorrelation <- ggplot(data = correlation_df,
                               aes(x = .data[[x]],
                                   y = .data[[y]],
-                                  color = MonitoringLocationName,
-                                  shape = MonitoringLocationName)) +
-        geom_point_interactive(aes(tooltip = paste0("Site: ", MonitoringLocationName,
+                                  color = MonitoringLocationName_Long,
+                                  shape = MonitoringLocationName_Long)) +
+        geom_point_interactive(aes(tooltip = paste0("Site: ", MonitoringLocationName_Long,
                                                     "\nDate: ", end_date,
                                                     "\n", input$select_param1, ": ", .data[[x]], 
                                                           " (", .data[[result_x]], ")",
@@ -360,8 +362,8 @@ cp_server <- function(id, user_data){
       c <- ggplot(data = correlation_df,
                   aes(x = .data[[x]],
                       y = .data[[y]],
-                      color = MonitoringLocationName,
-                      shape = MonitoringLocationName)) +
+                      color = MonitoringLocationName_Long,
+                      shape = MonitoringLocationName_Long)) +
         geom_point() + 
         labs(x = x_axis,
              y = y_axis,

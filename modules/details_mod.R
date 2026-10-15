@@ -43,7 +43,7 @@ details_server <- function(id, data_from){
       
       # Selecting existing columns to arrange by
       cols <- c("Park", 
-                "MonitoringLocationName", 
+                "MonitoringLocationName_Long", 
                 "end_date", 
                 "AxisName", 
                 "depth")
@@ -54,7 +54,7 @@ details_server <- function(id, data_from){
       # continue if data
       data_values <- get_data() |> 
         dplyr::select(any_of(c("Park",
-                               "MonitoringLocationName",
+                               "MonitoringLocationName_Long",
                                "lat",
                                "lon",
                                "end_date",
@@ -64,7 +64,7 @@ details_server <- function(id, data_from){
                                "value_unit",
                                "ResultDetectionConditionText"))) |> 
         dplyr::arrange(dplyr::pick(all_of(cols_existing))) |> 
-        dplyr::rename(Site = MonitoringLocationName,
+        dplyr::rename(Site = MonitoringLocationName_Long,
                       Latitude = lat,
                       Longitude = lon,
                       Date = end_date,
@@ -112,7 +112,7 @@ details_server <- function(id, data_from){
       # continue if data 
       wqp_data1 <- wqp_data |> 
         dplyr::select(Park,
-                      MonitoringLocationName,
+                      MonitoringLocationName_Long,
                       AxisName,
                       UpperPoint,
                       LowerPoint,
@@ -124,7 +124,7 @@ details_server <- function(id, data_from){
       exceedance_values2 <- get_data() |>
         dplyr::left_join(wqp_data1) |>  #,
                          # by = join_by(Park,
-                         #              MonitoringLocationName,
+                         #              MonitoringLocationName_Long,
                          #              AxisName,
                          #              UpperPoint,
                          #              LowerPoint,)) |>
@@ -132,7 +132,7 @@ details_server <- function(id, data_from){
       
       # Selecting existing columns to arrange by 
       cols_e <- c("Park", 
-                  "MonitoringLocationName", 
+                  "MonitoringLocationName_Long", 
                   "end_date", 
                   "AxisName", 
                   "depth")
@@ -141,7 +141,7 @@ details_server <- function(id, data_from){
       
       exceedance_values <- exceedance_values2 |> 
         dplyr::select(any_of(c("Park",
-                               "MonitoringLocationName",
+                               "MonitoringLocationName_Long",
                                "lat",
                                "lon",
                                "end_date",
@@ -155,7 +155,7 @@ details_server <- function(id, data_from){
                                "UpperDescription",
                                "Reference"))) |>  
         dplyr::arrange(dplyr::pick(all_of(cols_e_existing))) |>
-        dplyr::rename(Site = MonitoringLocationName,
+        dplyr::rename(Site = MonitoringLocationName_Long,
                       Latitude = lat,
                       Longitude = lon,
                       Date = end_date,

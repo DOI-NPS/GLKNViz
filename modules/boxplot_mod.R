@@ -19,7 +19,7 @@ bp_ui <- function(id){
       label = "Compare By:",
       choices = list("Year" = "year",
                      "Month" = "month_name",
-                     "Site" = "MonitoringLocationName"),
+                     "Site" = "MonitoringLocationName_Long"),
       inline = TRUE
     ),
     # Thresholds Button
@@ -131,7 +131,7 @@ bp_server <- function(id, user_data){
       # Correcting Label Names 
       grouping_names <- c("Year" = "year",
                           "Month" = "month_name",
-                          "Site" = "MonitoringLocationName")
+                          "Site" = "MonitoringLocationName_Long")
       
       # x-axis labels 
       x_axis <- names(grouping_names)[grouping_names == input$date_grouping]
@@ -149,7 +149,7 @@ bp_server <- function(id, user_data){
       ggboxplot <- ggplot(data = boxplot_df,
                           aes(x = factor(.data[[input$date_grouping]]), # from radiobutton
                               y = value,
-                              fill = MonitoringLocationName)) + 
+                              fill = MonitoringLocationName_Long)) + 
         geom_boxplot_interactive(aes(tooltip = after_stat({paste0("Site: ", .data$fill,
                                                                   "\nQ1: ", prettyNum(.data$lower),
                                                                   "\nMedian: ", prettyNum(.data$middle),
@@ -242,7 +242,7 @@ bp_server <- function(id, user_data){
       # Correcting Label Names 
       grouping_names <- c("Year" = "year",
                           "Month" = "month_name",
-                          "Site" = "MonitoringLocationName")
+                          "Site" = "MonitoringLocationName_Long")
       # x-axis labels 
       x_axis <- names(grouping_names)[grouping_names == input$date_grouping]
       
@@ -250,7 +250,7 @@ bp_server <- function(id, user_data){
       b <- ggplot(data = df_boxplot,
                   aes(x = factor(.data[[input$date_grouping]]), # from radiobutton
                       y = value,
-                      fill = MonitoringLocationName)) + 
+                      fill = MonitoringLocationName_Long)) + 
         geom_boxplot() + 
         labs(x = x_axis,
              y = unique(df_boxplot$AxisName),

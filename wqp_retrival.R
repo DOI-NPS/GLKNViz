@@ -146,12 +146,6 @@ wqp_data1 <- wqp_data_all |>
                 ActivityMediaName)) |> 
   filter(!grepl("/", 
                 ActivityIdentifier)) |>
-  # removing additional bottom samples for thermally stratified sites
-  filter(!(CharacteristicName %in% c("Ammonium",
-                                     "Nitrate + Nitrite",
-                                     "Nitrogen",
-                                     "Phosphorus") & 
-             ActivityTopDepthHeightMeasure.MeasureValue > 2)) |> 
   filter(!(CharacteristicName %in% c("Ammonium",
                                      "Nitrate + Nitrite",
                                      "Nitrogen",
@@ -159,8 +153,6 @@ wqp_data1 <- wqp_data_all |>
              SampleCollectionEquipmentName == "Van Dorn Bottle")) |> 
   filter(!(LaboratoryName == "White Water Associates" &
              year >= 2014)) |>
-  # removing non-detected data
-  # filter(!ResultDetectionConditionText == "Not Detected") |> 
   # adding censored data conditions
   mutate(ResultMeasureValue = case_when(ResultDetectionConditionText == "Present Below Quantification Limit" ~ 
                                           str_extract(ResultCommentText, "\\d*\\.?\\d+"),
@@ -258,6 +250,7 @@ wqp_data3 <- wqp_data2 |>
          ResultMeasure.MeasureUnitCode,
          Park,
          MonitoringLocationName,
+         MonitoringLocationName_Long,
          MonitoringLocationTypeName,
          HUCEightDigitCode,
          LatitudeMeasure,

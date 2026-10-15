@@ -18,7 +18,7 @@ server <- function(input, output, session){
     
     sites <- wqp_data |> 
       dplyr::filter(Park %in% input$park) |> 
-      dplyr::pull(MonitoringLocationName) |> 
+      dplyr::pull(MonitoringLocationName_Long) |> 
       unique() |> 
       sort()
     
@@ -36,7 +36,7 @@ server <- function(input, output, session){
     
     wqp_data |> 
       dplyr::filter(Park %in% input$park,
-                    MonitoringLocationName %in% input$station) 
+                    MonitoringLocationName_Long %in% input$station) 
   })
   
   # Map Reactive ----
@@ -75,7 +75,7 @@ server <- function(input, output, session){
     last_station <- tail(input$station, 1)
 
     site <- wqp_data |>
-      dplyr::filter(MonitoringLocationName == last_station) |>
+      dplyr::filter(MonitoringLocationName_Long == last_station) |>
       dplyr::distinct()
 
     leafletProxy("map") |>
@@ -85,7 +85,7 @@ server <- function(input, output, session){
       clearPopups() |>
       addPopups(lng = site$lon[1],
                 lat = site$lat[1],
-                popup = site$MonitoringLocationName[1])
+                popup = site$MonitoringLocationName_Long[1])
   })
   
   # Parent Servers ----

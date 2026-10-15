@@ -100,6 +100,7 @@ ts_server <- function(id, user_data){
                                            n() >= 3 ~ median(value, na.rm = TRUE)),
                          .by = c(Park,
                                  MonitoringLocationName,
+                                 MonitoringLocationName_Long,
                                  CharacteristicName,
                                  end_date,
                                  AxisName,
@@ -113,7 +114,7 @@ ts_server <- function(id, user_data){
                                  ResultDetectionConditionText,
                                  Reference)) |>
         dplyr::arrange(Park,
-                       MonitoringLocationName,
+                       MonitoringLocationName_Long,
                        end_date,
                        CharacteristicName)
     }) 
@@ -132,7 +133,7 @@ ts_server <- function(id, user_data){
         # converting date to numeric for loess
         dplyr::mutate(end_date_num = as.numeric(end_date)) |> 
         # for multiple sites
-        dplyr::group_by(MonitoringLocationName) |>
+        dplyr::group_by(LonitoringLocationName_Long) |>
         # removing NA
         dplyr::filter(!is.na(value),
                       !is.na(end_date_num)) |>
@@ -154,7 +155,7 @@ ts_server <- function(id, user_data){
       geom_line(data = df_reg,
                 aes(x = end_date,
                     y = fit,
-                    color = MonitoringLocationName))
+                    color = MonitoringLocationName_Long))
     })
     
     ### Render Time Series Plot ----
@@ -223,9 +224,9 @@ ts_server <- function(id, user_data){
       ggtimeseries <- ggplot(data = timeseries_df1,
                              aes(end_date,
                                  value,
-                                 color = MonitoringLocationName,
-                                 shape = MonitoringLocationName)) +
-        geom_point_interactive(aes(tooltip = paste0("Site: ", MonitoringLocationName,
+                                 color = MonitoringLocationName_Long,
+                                 shape = MonitoringLocationName_Long)) +
+        geom_point_interactive(aes(tooltip = paste0("Site: ", MonitoringLocationName_Long,
                                                     "\nDate: ", end_date,
                                                     "\nValue: ", value,
                                                     "\n", ResultDetectionConditionText))) +
@@ -334,8 +335,8 @@ ts_server <- function(id, user_data){
       t <- ggplot(data = df_timeseries1,
                   aes(end_date, 
                       value, 
-                      color = MonitoringLocationName, 
-                      shape = MonitoringLocationName)) +
+                      color = MonitoringLocationName_Long, 
+                      shape = MonitoringLocationName_Long)) +
         geom_point() +
         geom_line(na.rm = FALSE) +
         labs(x = "Date", 

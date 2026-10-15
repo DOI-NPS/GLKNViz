@@ -103,7 +103,7 @@ dp_server <- function(id, user_data){
         # filtering date
         dplyr::filter(depth >= input$depth_range[1],
                       depth <= input$depth_range[2]) |> 
-        dplyr::arrange(MonitoringLocationName,
+        dplyr::arrange(MonitoringLocationName_Long,
                        end_date,
                        depth)
     })
@@ -174,11 +174,11 @@ dp_server <- function(id, user_data){
       ggdepthprofile <- ggplot(data = profile_df,
                                aes(x = value,
                                    y = depth,
-                                   color = MonitoringLocationName,
-                                   shape = MonitoringLocationName,
+                                   color = MonitoringLocationName_Long,
+                                   shape = MonitoringLocationName_Long,
                                    group = end_date)) +
         geom_path() + 
-        geom_point_interactive(aes(tooltip = paste0("Site: ", MonitoringLocationName,
+        geom_point_interactive(aes(tooltip = paste0("Site: ", MonitoringLocationName_Long,
                                                     "\nDate: ", end_date,
                                                     "\nDepth: ", depth,
                                                     "\nValue: ", value,
@@ -283,8 +283,8 @@ dp_server <- function(id, user_data){
       p <- ggplot(data = profile_df,
                   aes(x = value,
                       y = depth,
-                      color = MonitoringLocationName,
-                      shape = MonitoringLocationName,
+                      color = MonitoringLocationName_Long,
+                      shape = MonitoringLocationName_Long,
                       group = end_date)) +
         geom_path() + 
         geom_point() +
