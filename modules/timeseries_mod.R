@@ -133,7 +133,7 @@ ts_server <- function(id, user_data){
         # converting date to numeric for loess
         dplyr::mutate(end_date_num = as.numeric(end_date)) |> 
         # for multiple sites
-        dplyr::group_by(LonitoringLocationName_Long) |>
+        dplyr::group_by(MonitoringLocationName_Long) |>
         # removing NA
         dplyr::filter(!is.na(value),
                       !is.na(end_date_num)) |>
