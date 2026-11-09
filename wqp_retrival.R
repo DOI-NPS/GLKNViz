@@ -144,15 +144,21 @@ wqp_data1 <- wqp_data_all |>
   # removing air and other
   filter(!grepl("Air|Other",
                 ActivityMediaName)) |> 
+  # removing weird / names
   filter(!grepl("/", 
                 ActivityIdentifier)) |>
+  # removing Van Dorn Bottle samples 
   filter(!(CharacteristicName %in% c("Ammonium",
                                      "Nitrate + Nitrite",
                                      "Nitrogen",
                                      "Phosphorus") & 
              SampleCollectionEquipmentName == "Van Dorn Bottle")) |> 
+  # removing white water associates after 2014
   filter(!(LaboratoryName == "White Water Associates" &
-             year >= 2014)) |>
+             year >= 2014)) 
+
+## cleaning up data 
+wqp_data2 <- wqp_data1 |>
   # adding censored data conditions
   mutate(ResultMeasureValue = case_when(ResultDetectionConditionText == "Present Below Quantification Limit" ~ 
                                           str_extract(ResultCommentText, "\\d*\\.?\\d+"),
@@ -167,10 +173,15 @@ wqp_data1 <- wqp_data_all |>
          ActivityDepthHeightMeasure.MeasureValue = if_else(ActivityDepthHeightMeasure.MeasureValue < 0, 0,
                                                            ActivityDepthHeightMeasure.MeasureValue),
          ActivityDepthHeightMeasure.MeasureValue = -abs(ActivityDepthHeightMeasure.MeasureValue),
-         ResultMeasureValue = as.numeric(ResultMeasureValue))
+         # making numeric
+         ResultMeasureValue = as.numeric(ResultMeasureValue),
+         # inverting secchi disk depth and bottom depth
+         ResultMeasureValue = case_when(CharacteristicName == "Depth, bottom" ~ -abs(ResultMeasureValue),
+                                        CharacteristicName == "Depth, Secchi disk depth" ~ -abs(ResultMeasureValue),
+                                        TRUE ~ ResultMeasureValue))
 
 ## adding station data ----
-wqp_data_stations <- wqp_data1 |>
+wqp_data_stations <- wqp_data2 |>
   # adding station data
   left_join(glkn_stations,
             by = join_by(OrganizationIdentifier,
@@ -197,8 +208,8 @@ wqp_data_ml <- wqp_data_stations |>
 ### joining thresholds that have no MonitoringLocationName
 wqp_data_thresh <- wqp_data_ml |>
   left_join(thresh_no,
-            by = c("Park",
-                   "CharacteristicName")) |>
+            join_by(CharacteristicName,
+                    Park)) |>
   mutate(LowerPoint = coalesce(LowerPoint.x,
                                LowerPoint.y),
          UpperPoint = coalesce(UpperPoint.x,
@@ -215,7 +226,7 @@ wqp_data_thresh <- wqp_data_ml |>
          -ends_with(".y"))
 
 ## Removing VOYA Sites (Agnes, Jorgans, Oleary, Quarterline, and War Club) ----
-wqp_data2 <- wqp_data_thresh |> 
+wqp_data3 <- wqp_data_thresh |> 
   filter(!(MonitoringLocationName %in% c("Agnes Lake",
                                          "Jorgens Lake",
                                          "O'Leary Lake",
@@ -223,7 +234,7 @@ wqp_data2 <- wqp_data_thresh |>
                                          "War Club Lake")))
 
 ## Adding characteristicNames and cleaning up columns ----
-wqp_data3 <- wqp_data2 |> 
+wqp_data4 <- wqp_data3 |> 
   # adding char names
   left_join(chr_lookup,
             by = "CharacteristicName") |> 
@@ -267,13 +278,13 @@ wqp_data3 <- wqp_data2 |>
 # writing wqp data for annual report
 PATH_ANNUAL <- Sys.getenv("PATH_ANNUALREPORT")
 
-write_csv(wqp_data3,
+write_csv(wqp_data4,
           paste0(PATH_ANNUAL,
                  "data/wqp_glkn_",
           format(Sys.Date(), "%Y"),
           ".csv"))
 
-wqp_data <- wqp_data3 |>
+wqp_data <- wqp_data4 |>
   # filtering by sites that have >= 5 years of data
   filter(n_distinct(year) >= 5,
          .by = c(MonitoringLocationIdentifier,
@@ -282,5 +293,3 @@ wqp_data <- wqp_data3 |>
 # Writing the new wqp_data ----
 write_csv(wqp_data,
           "./data/wqp_glkn.csv")
-
-
