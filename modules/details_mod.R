@@ -122,13 +122,10 @@ details_server <- function(id, data_from){
         dplyr::distinct() 
 
       exceedance_values2 <- get_data() |>
-        dplyr::left_join(wqp_data1) |>  #,
-                         # by = join_by(Park,
-                         #              MonitoringLocationName_Long,
-                         #              AxisName,
-                         #              UpperPoint,
-                         #              LowerPoint,)) |>
-        dplyr::filter(value > UpperPoint | value < LowerPoint) 
+        dplyr::left_join(wqp_data1) |> 
+        # applying Calcium threshold weird filter
+        dplyr::filter(dplyr::case_when(AxisName == "Calcium (mg/L)" ~ value > LowerPoint,
+                                       TRUE ~ value > UpperPoint | value < LowerPoint)) 
       
       # Selecting existing columns to arrange by 
       cols_e <- c("Park", 
