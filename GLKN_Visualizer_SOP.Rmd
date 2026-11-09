@@ -1,7 +1,6 @@
 ---
 title: "Great Lakes Network Water Quality Data Visualizer"
 subtitle: "Standard Operating Procedure"
-author: "Alex Egan, Richard Damstra, Cyrus Hester, and David VanderMeulen"
 date: "`r Sys.Date()`"
 output: 
   html_document:
@@ -64,3 +63,10 @@ The visualizer contains a tab for each section of the visualizer. The About tab 
 # Recording Keeping
 
 A static version of the visualizer will be kept in the NPS Data Store. The development version of the visualizer will be kept on the maintainers DOI Github Enterprise Cloud (DGEC) account, typically the data manager, where version history will be saved and logged. 
+
+# Quick Step Guide
+
+1. Pull latest version of the `main` branch from [DOI-NPS/GLKNViz](https://github.com/DOI-NPS/GLKNViz)
+2. Update chr_lookup.csv, station.csv, and thresholds.csv.
+3. Run wqp_retrival.R
+4. In either server.R, global.R, or ui.R, select Republish. 

@@ -2,10 +2,22 @@
 
 ## Description
 
-The `main` branch is Version 0.0.1 of the `GLKNViz` repository. This is the first 
-deployment of the Great Lakes Inventory and Monitoring Network water quality 
-shiny data visualizer. Previous archived versions of this RShiny app can be found
-at [www.github.com/kinziebailey/GLKNViz](www.github.com/kinziebailey/GLKNViz).
+The `main` branch is Version 0.0.1 of the `GLKNViz` repository. Previous archived 
+versions of this RShiny app can be found at
+[www.github.com/kinziebailey/GLKNViz](www.github.com/kinziebailey/GLKNViz).
+
+## Documents
+
+This repo contains code to compile data for and run the Great Lakes Network discrete 
+water quality data visualizer. 
+
+The following files are part of the repo:
+- ui.R: user interface for shiny app
+- server.R: server for shiny app
+- global.R: global parameters and data frames sourced by shiny app
+- modules/: folder containing the plot specific UI and server functions.
+- www/: folder containing about information, instructions and CSS. 
+- GLKN_Visualizer_SOP.Rmd: the SOP for maintaining and running this visualizer. 
 
 ## Live Demo:
 [Click here to run the app](https://kinziebailey.shinyapps.io/GLKNViz-Dev/)
